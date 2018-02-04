@@ -4,8 +4,11 @@ version = "0.1.0"
 authors = ["Thomas Gideon <cmdln@thecommandline.net>"]
 
 [dependencies]
+diesel = { version = "1.0", features = ["sqlite"] }
 iron = "0.6"
 router = "0.6"
+r2d2 = "0.8"
+r2d2-diesel = "1.0"
 
 [dev-dependencies]
 iron-test = "0.6"
