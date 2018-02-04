@@ -5,10 +5,13 @@ authors = ["Thomas Gideon <cmdln@thecommandline.net>"]
 
 [dependencies]
 diesel = { version = "1.0", features = ["sqlite"] }
+dotenv = "0.10"
+env_logger = "0.5"
 iron = "0.6"
-router = "0.6"
+log = "0.4"
 r2d2 = "0.8"
 r2d2-diesel = "1.0"
+router = "0.6"
 
 [dev-dependencies]
 iron-test = "0.6"

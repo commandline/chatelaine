@@ -1,6 +1,10 @@
 #[macro_use]
 extern crate diesel;
+extern crate dotenv;
+extern crate env_logger;
 extern crate iron;
+#[macro_use]
+extern crate log;
 extern crate r2d2;
 extern crate r2d2_diesel;
 #[macro_use]
@@ -29,6 +33,7 @@ pub fn route() -> Chain {
         DieselMiddleware::new(&env::var("DATABASE_URL").unwrap_or_else(|_| "chatelaine.db".to_owned()))
             .unwrap(),
     );
+    debug!("Routes added.");
     chain
 }
 
