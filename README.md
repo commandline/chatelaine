@@ -58,8 +58,9 @@ secure way to manage and share the cryptographic keys you need, that's all.
 * [ ] Implement access control
   * [x] Model a user
   * [x] Add authentication to requests
-  * [ ] Implement digest/salt on passwords
-  * [ ] Look into digest auth in place of basic
+  * [x] Implement digest/salt on passwords
+  * [x] Look into digest auth in place of basic
+  * [ ] Figure out how to stabilize tests with blank database
   * [ ] Add an admin bit to user model
   * [ ] Add list user endpoint, limit to admin user
   * [ ] Write PUT endpoint for user

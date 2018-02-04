@@ -1,3 +1,5 @@
+extern crate argon2rs;
+extern crate base64;
 #[macro_use]
 extern crate diesel;
 extern crate dotenv;
@@ -7,6 +9,7 @@ extern crate iron;
 extern crate log;
 extern crate r2d2;
 extern crate r2d2_diesel;
+extern crate rand;
 #[macro_use]
 extern crate router;
 

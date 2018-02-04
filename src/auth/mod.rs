@@ -1,3 +1,5 @@
+use argon2rs;
+use base64;
 use diesel::prelude::*;
 use iron::headers::{Authorization, Basic};
 use iron::middleware::*;
@@ -28,14 +30,18 @@ impl<H: Handler> AuthHandler<H> {
         use db::schema::credentials::dsl::*;
 
         if let Some(&Authorization(ref basic)) = req.headers.get::<Authorization<Basic>>() {
+            if basic.password.is_none() {
+                return false;
+            }
             let conn = req.db_conn();
-            if let Ok(results) = credentials
+            let results = credentials
                 .filter(username.eq(&basic.username))
                 .limit(1)
-                .load::<Credentials>(&*conn)
-            {
+                .load::<Credentials>(&*conn);
+            if let Ok(results) = results {
                 if results.len() == 1 {
-                    Some(&results[0].password) == basic.password.as_ref()
+                    let to_check = basic.password.as_ref().unwrap();
+                    results[0].password == digest(to_check, &results[0].salt)
                 } else {
                     false
                 }
@@ -46,6 +52,11 @@ impl<H: Handler> AuthHandler<H> {
             false
         }
     }
+}
+
+fn digest(password: &str, salt: &str) -> String {
+    let password = argon2rs::argon2i_simple(password, salt);
+    base64::encode(&password)
 }
 
 fn unauthorized() -> Response {
@@ -79,10 +90,7 @@ mod tests {
 
     #[test]
     fn no_auth() {
-        setup_creds(NewCredentials {
-            username: "admin".to_owned(),
-            password: "admin".to_owned(),
-        });
+        setup_creds(NewCredentials::new("admin", "admin"));
         let response =
             request::get("http://localhost:3000/hello", Headers::new(), &route()).unwrap();
 
@@ -94,10 +102,7 @@ mod tests {
 
     #[test]
     fn with_valid_auth() {
-        setup_creds(NewCredentials {
-            username: "admin".to_owned(),
-            password: "admin".to_owned(),
-        });
+        setup_creds(NewCredentials::new("admin", "admin"));
         let mut headers = Headers::new();
         headers.set(Authorization(Basic {
             username: "admin".to_owned(),
@@ -114,10 +119,7 @@ mod tests {
 
     #[test]
     fn with_missing_auth() {
-        setup_creds(NewCredentials {
-            username: "admin".to_owned(),
-            password: "admin".to_owned(),
-        });
+        setup_creds(NewCredentials::new("admin", "admin"));
         let mut headers = Headers::new();
         headers.set(Authorization(Basic {
             username: "user".to_owned(),
@@ -134,10 +136,7 @@ mod tests {
 
     #[test]
     fn with_invalid_auth() {
-        setup_creds(NewCredentials {
-            username: "admin".to_owned(),
-            password: "admin".to_owned(),
-        });
+        setup_creds(NewCredentials::new("admin", "admin"));
         let mut headers = Headers::new();
         headers.set(Authorization(Basic {
             username: "admin".to_owned(),
