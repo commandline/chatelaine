@@ -54,7 +54,20 @@ authentication or SSO approach of choice. Sometimes all you want is a simple,
 secure way to manage and share the cryptographic keys you need, that's all.
 
 ## TODO
-* [ ] Pick a web framework - Iron, Rocket, etc.?
-* [ ] Implement access control - user, authentication, administrative user access
+* [x] Pick a web framework - Iron, Rocket, etc.?
+* [ ] Implement access control
+  * [x] Model a user
+  * [x] Add authentication to requests
+  * [ ] Implement digest/salt on passwords
+  * [ ] Look into digest auth in place of basic
+  * [ ] Add an admin bit to user model
+  * [ ] Add list user endpoint, limit to admin user
+  * [ ] Write PUT endpoint for user
+  * [ ] Write DELETE endpoint for user
+* [ ] Add logging
 * [ ] Implement JWK upload and storage
+  * [ ] Add dependency on Medallion branch with JWK support
+  * [ ] Add put endpoint
+  * [ ] Figure out key ID handling - caller sets? create in order?
 * [ ] Implement JWK serving
+* [ ] Support key generation?
