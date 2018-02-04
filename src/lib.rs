@@ -26,7 +26,7 @@ pub fn route() -> Chain {
     chain.link_around(auth);
     let mut chain = Chain::new(chain);
     chain.link_before(
-        DieselMiddleware::new(&env::var("DATABASE_URL").unwrap_or_else(|_| ":memory".to_owned()))
+        DieselMiddleware::new(&env::var("DATABASE_URL").unwrap_or_else(|_| "chatelaine.db".to_owned()))
             .unwrap(),
     );
     chain
