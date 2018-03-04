@@ -1,19 +1,20 @@
 extern crate dotenv;
 extern crate env_logger;
-extern crate iron;
-#[macro_use]
-extern crate log;
+extern crate hyper;
 
 extern crate chatelaine;
 
-use iron::prelude::*;
+use hyper::server::Http;
 
 fn main() {
     dotenv::dotenv().ok();
     env_logger::init();
 
-    let _server = Iron::new(chatelaine::route())
-        .http("localhost:3000")
-        .unwrap();
-    info!("Server listening on 3000");
+    let address = "127.0.0.1:3000"
+        .parse()
+        .expect("Unable to parse bind address.");
+    let server = Http::new()
+        .bind(&address, || Ok(chatelaine::route()))
+        .expect("Unable to create server.");
+    server.run().expect("Unable to run server");
 }
